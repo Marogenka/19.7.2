@@ -1,0 +1,155 @@
+from api import PetFriends
+from settings import valid_email, valid_password
+import os
+
+pf = PetFriends()
+
+
+def test_get_api_key_for_valid_user(email=valid_email, password=valid_password):
+
+    status, result = pf.get_api_key(email, password)
+    assert status == 200
+    assert 'key' in result
+
+
+def test_get_all_pets_with_valid_key(filter=''):
+    _, auth_key = pf.get_api_key(valid_email, valid_password)
+    status, result = pf.get_list_of_pets(auth_key, filter)
+
+    assert status == 200
+    assert len(result['pets']) > 0
+
+
+def test_add_new_pet_with_valid_data(name='Kisa', animal_type='терьер',
+                                     age='-11', pet_photo='images/cat1.jpg'):
+
+    pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+    _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+    status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+    # Ожидаем ошибку, так как  возраст не может быть отрицательным
+    assert status == 200
+    assert result['age'] == age
+
+def test_add_new_pet_with_valid_data(name='Viskas', animal_type='терьер',
+                                     age='', pet_photo='images/cat1.jpg'):
+
+    pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+    _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+    status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+    # Ожидаем ошибку, так как поле обязательно для заполнения
+
+    assert status == 200
+    assert result['age'] == age
+
+    def test_add_new_pet_with_valid_data(name='Kotik', animal_type='терьер',
+                                         age='1000', pet_photo='images/cat1.jpg'):
+        pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+        _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+        status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+
+        # Ожидаем ошибку, так как слишком большой возраст
+        assert status == 200
+        assert result['age'] == age
+
+
+        def test_add_new_pet_with_valid_data(name='', animal_type='терьер',
+                                             age='5', pet_photo='images / cat1.jpg'):
+
+            pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+            _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+            status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+            # Ожидаем ошибку, так как поле обязательно для заполнения
+
+            assert status == 200
+            assert result['name'] == name
+
+            def test_add_new_pet_with_valid_data(name='@&%', animal_type='терьер',
+                                                 age='5', pet_photo='images / cat1.jpg'):
+                pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+                _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+                status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+                # Ожидаем ошибку, так как имя не может состоять из спец символов
+                assert status == 200
+                assert result['name'] == name
+
+            def test_add_new_pet_with_valid_data(name='7', animal_type='терьер',
+                                                 age='2', pet_photo='images / cat1.jpg'):
+                pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+                _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+                status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+                # Ожидаем ошибку, так как поле типа строка
+
+                assert status == 200
+                assert result['name'] == name
+
+            def test_add_new_pet_with_valid_data(name='Bobik', animal_type='',
+                                                 age='5', pet_photo='images / cat1.jpg'):
+                pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+                _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+                status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+
+                # Ожидаем ошибку, так как поле обязательно для заполнения
+                assert status == 200
+                assert result['animal_type'] == animal_type
+
+            def test_add_new_pet_with_valid_data(name='Bobik', animal_type='',
+                                                 age='5', pet_photo='images / cat1.jpg'):
+                pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+                _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+                status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+                # Ожидаем ошибку, так как поле обязательно для заполнения
+                assert status == 200
+                assert result['animal_type'] == animal_type
+
+            def test_add_new_pet_with_valid_data(name='volf', animal_type='1',
+                                                 age='5', pet_photo='images / cat1.jpg'):
+                pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+                _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+                status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+
+                # Ожидаем ошибку, так как поле типа строка
+                assert status == 200
+                assert result['animal_type'] == animal_type
+
+            def test_add_new_pet_with_valid_data(name='Dik', animal_type='%',
+                                                 age='5', pet_photo='images / cat1.jpg'):
+                pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+                _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+                status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+
+                assert status == 200
+                assert result['animal_type'] == animal_type
+
+            # Ожидаем ошибку, так как поле типа строка
+
+            def test_add_new_pet_with_valid_data(name='Dik', animal_type='%',
+                                                 age='5', pet_photo='images / cat1.pdf'):
+                pet_photo = os.path.join(os.path.dirname(__file__), pet_photo)
+
+                _, auth_key = pf.get_api_key(valid_email, valid_password)
+
+                status, result = pf.add_new_pet(auth_key, name, animal_type, age, pet_photo)
+
+            #Ожидаем ошибку, так как разрешенные типы файла JPG, JPEG or PNG
+                assert status == 200
+                assert result['pet_photo'] == pet_photo
